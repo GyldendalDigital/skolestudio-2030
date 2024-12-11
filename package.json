@@ -1,0 +1,30 @@
+{
+  "name": "skolestudio-2030",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "dev": "vite --port=3001",
+    "build": "vite build",
+    "serve": "vite preview",
+    "start": "vite"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@tanstack/router-plugin": "^1.87.4",
+    "@vitejs/plugin-react": "^4.3.2",
+    "vite": "^6.0.3"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^6.1.10",
+    "@mui/material": "^6.1.10",
+    "@tanstack/react-router": "^1.87.3",
+    "@tanstack/router-devtools": "^1.87.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
