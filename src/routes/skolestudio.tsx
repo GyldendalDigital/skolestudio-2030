@@ -1,14 +1,15 @@
 import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Autocomplete, Chip, Grid2 as Grid, TextField } from "@mui/material";
+import { Chip, TextField } from "@mui/material";
 import GridCard from "../components/GridCard";
 import { groupedData, sortedData } from "../utils";
-import { content, getAllContent } from "../data/content";
 import globalStyles from "./global.module.css";
 import styles from "./skolestudio.module.css";
 import { RButton } from "../components/RS-button";
-import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import skolestudioLogo from "../skolestudio.svg";
+import { getLocalContent } from "../data/local";
+import { dbContentV1 } from "../data/content";
 
 export const Route = createFileRoute("/skolestudio")({
   component: Skolestudio,
@@ -23,13 +24,15 @@ type Item = {
 function Skolestudio() {
   const [searchText, setSearchText] = React.useState("");
 
-  const topicFacetOptions: Item[] = sortedData(
-    groupedData(getAllContent())
-  ).map(([topic, records]) => ({
-    label: topic,
-    value: topic,
-    count: records.length,
-  }));
+  const content = [...getLocalContent(), ...dbContentV1];
+
+  const topicFacetOptions: Item[] = sortedData(groupedData(content)).map(
+    ([topic, records]) => ({
+      label: topic,
+      value: topic,
+      count: records.length,
+    })
+  );
 
   const [selectedTopicValues, setSelectedTopicValues] = React.useState<
     string[]
@@ -90,11 +93,11 @@ function Skolestudio() {
 
       <main>
         <div className={styles.contentGrid}>
-          {getAllContent()
+          {content
             .filter(
               (x) =>
                 !searchText ||
-                [x.title, x.description, x.subject, ...x.topics]
+                [x.title, x.description, ...x.subjects, ...x.topics]
                   .join(" ")
                   .toLowerCase()
                   .includes(searchText.toLowerCase())

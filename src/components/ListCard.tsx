@@ -3,11 +3,11 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { Data } from "../data/content";
 import { placeholderImageUrl } from "../utils";
 import { Chip, styled } from "@mui/material";
+import { Content } from "../data/types";
 
-export default function ListCard({ data }: { data: Data }) {
+export default function ListCard({ data }: { data: Content }) {
   return (
     <Card sx={{ display: "flex" }}>
       <CardMedia
@@ -37,7 +37,7 @@ export default function ListCard({ data }: { data: Data }) {
         </Box>
 
         <ChipWrapper>
-          <Chip label={data.subject} variant="outlined" size="small" />
+          <Chip label={data.subjects.join(", ")} variant="outlined" size="small" />
           {data.topics.map((topic, i) => (
             <Chip key={i} label={topic} variant="outlined" size="small" />
           ))}

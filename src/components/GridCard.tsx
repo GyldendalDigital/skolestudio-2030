@@ -3,16 +3,16 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { Data } from "../data/content";
 import { placeholderImageUrl } from "../utils";
 import { Chip } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { Content } from "../data/types";
 
 export default function GridCard({
   data,
   onTopicClick,
 }: {
-  data: Data;
+  data: Content;
   onTopicClick: (topicValue: string) => void;
 }) {
   return (
@@ -45,7 +45,11 @@ export default function GridCard({
         </Box>
 
         <ChipWrapper>
-          <Chip label={data.subject} variant="outlined" size="small" />
+          <Chip
+            label={data.subjects.join(", ")}
+            variant="outlined"
+            size="small"
+          />
           {data.topics.map((topic, i) => (
             <Chip
               key={i}

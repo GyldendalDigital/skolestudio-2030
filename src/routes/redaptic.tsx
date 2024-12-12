@@ -1,18 +1,18 @@
 import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Button, TextField } from "@mui/material";
-import {
-  content as dbContent,
-  createLocalContent,
-  deleteLocalContent,
-  getAllContent,
-} from "../data/content";
+import { dbContentV1 } from "../data/content";
 import { Link } from "@tanstack/react-router";
 import redapticLogo from "../redaptic.svg";
 import { SButton } from "../components/RS-button";
 import styles from "./redaptic.module.css";
 import ListCard from "../components/ListCard";
 import globalStyles from "./global.module.css";
+import {
+  createEmptyContent,
+  createLocalContent,
+  deleteLocalContent,
+} from "../data/local";
 
 export const Route = createFileRoute("/redaptic")({
   component: Redaptic,
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/redaptic")({
 function Redaptic() {
   const [searchText, setSearchText] = React.useState("");
 
-  const [content, setContent] = React.useState(getAllContent());
+  const [content, setContent] = React.useState([...dbContentV1]);
 
   return (
     <div className={globalStyles.pageWrapper}>
@@ -39,12 +39,7 @@ function Redaptic() {
         <Button
           variant="outlined"
           onClick={() => {
-            const data = {
-              title: "Nytt innhold",
-              description: "",
-              subject: "Norsk",
-              topics: ["Verb"],
-            };
+            const data = createEmptyContent();
             createLocalContent(data);
             setContent([data, ...content]);
           }}
@@ -55,7 +50,7 @@ function Redaptic() {
           variant="outlined"
           onClick={() => {
             deleteLocalContent();
-            setContent(dbContent);
+            setContent(dbContentV1);
           }}
         >
           Slett innhold
@@ -68,7 +63,7 @@ function Redaptic() {
             .filter(
               (x) =>
                 !searchText ||
-                [x.title, x.description, x.subject, ...x.topics]
+                [x.title, x.description, ...x.subjects, ...x.topics]
                   .join(" ")
                   .toLowerCase()
                   .includes(searchText.toLowerCase())
