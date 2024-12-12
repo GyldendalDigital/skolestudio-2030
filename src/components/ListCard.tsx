@@ -14,6 +14,7 @@ export default function ListCard({ data }: { data: Content }) {
         component="img"
         sx={{ height: "100%", width: 100 }}
         image={placeholderImageUrl(data.title)}
+        alt="Versågod, Ola 🧐"
       />
       <CardContent
         sx={{
@@ -37,7 +38,11 @@ export default function ListCard({ data }: { data: Content }) {
         </Box>
 
         <ChipWrapper>
-          <Chip label={data.subjects.join(", ")} variant="outlined" size="small" />
+          <Chip
+            label={data.subjects.join(", ")}
+            variant="outlined"
+            size="small"
+          />
           {data.topics.map((topic, i) => (
             <Chip key={i} label={topic} variant="outlined" size="small" />
           ))}

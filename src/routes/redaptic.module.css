@@ -1,3 +1,31 @@
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+header {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 1rem;
+
+  a {
+    height: 50px;
+
+    img {
+      height: 50px;
+    }
+  }
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

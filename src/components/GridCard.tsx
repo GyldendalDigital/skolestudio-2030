@@ -21,6 +21,7 @@ export default function GridCard({
         component="img"
         sx={{ height: 140 }}
         image={placeholderImageUrl(data.title)}
+        alt="Versågod, Ola 🧐"
       />
       <CardContent
         sx={{

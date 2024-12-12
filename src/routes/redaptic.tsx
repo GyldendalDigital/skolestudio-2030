@@ -7,7 +7,6 @@ import redapticLogo from "../redaptic.svg";
 import { SButton } from "../components/RS-button";
 import styles from "./redaptic.module.css";
 import ListCard from "../components/ListCard";
-import globalStyles from "./global.module.css";
 import {
   createEmptyContent,
   createLocalContent,
@@ -24,7 +23,7 @@ function Redaptic() {
   const [content, setContent] = React.useState([...dbContentV1]);
 
   return (
-    <div className={globalStyles.pageWrapper}>
+    <div className={styles.pageWrapper}>
       <header>
         <Link to="/redaptic">
           <img src={redapticLogo} alt="Redaptic" />

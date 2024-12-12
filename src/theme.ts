@@ -1,12 +1,13 @@
 import { createTheme } from "@mui/material/styles";
 
-const bgColor = "#fdf9f9";
-const textColor = "#481125";
+export const bgColor = "#fdf9f9";
+export const textColor = "#481125";
+export const textColorLight = "#691837";
 
 export const theme = createTheme({
   palette: {
     primary: {
-      light: "#691837",
+      light: textColorLight,
       main: textColor,
       dark: "#28000E",
       contrastText: bgColor,

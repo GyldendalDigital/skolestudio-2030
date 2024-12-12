@@ -1,13 +1,13 @@
 export const placeholderImageUrl = (seed: string) =>
   `https://picsum.photos/seed/${seed}/300/200`;
 
-export const groupedData = (data: any[]) =>
+export const groupedData = (data: any[], prop: any) =>
   data.reduce((acc, item) => {
-    item.topics.forEach((topic: any) => {
-      if (!acc[topic]) {
-        acc[topic] = [];
+    item[prop].forEach((tagItem: any) => {
+      if (!acc[tagItem]) {
+        acc[tagItem] = [];
       }
-      acc[topic].push(item);
+      acc[tagItem].push(item);
     });
     return acc;
   }, {});
