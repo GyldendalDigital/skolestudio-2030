@@ -7,9 +7,15 @@ import { placeholderImageUrl } from "../utils";
 import { Chip, styled } from "@mui/material";
 import { Content } from "../data/types";
 
-export default function ListCard({ data }: { data: Content }) {
+type Props = {
+  data: Content;
+  onCardClick: () => void;
+  onTopicClick?: (topicValue: string) => void;
+};
+
+export default function ListCard({ data, onCardClick, onTopicClick }: Props) {
   return (
-    <Card sx={{ display: "flex" }}>
+    <Card sx={{ display: "flex" }} onClick={onCardClick}>
       <CardMedia
         component="img"
         sx={{ height: "100%", width: 100 }}
@@ -38,11 +44,9 @@ export default function ListCard({ data }: { data: Content }) {
         </Box>
 
         <ChipWrapper>
-          <Chip
-            label={data.subjects.join(", ")}
-            variant="outlined"
-            size="small"
-          />
+          {data.subjects.map((subject, i) => (
+            <Chip key={i} label={subject} variant="outlined" size="small" />
+          ))}
           {data.topics.map((topic, i) => (
             <Chip key={i} label={topic} variant="outlined" size="small" />
           ))}

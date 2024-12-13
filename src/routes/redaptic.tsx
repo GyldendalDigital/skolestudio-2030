@@ -11,7 +11,11 @@ import {
   createEmptyContent,
   createLocalContent,
   deleteLocalContent,
+  getLocalContent,
 } from "../data/local";
+import RedapticDialog from "../components/Redaptic.dialog";
+import { Content } from "../data/types";
+import { uniqueBy } from "../utils";
 
 export const Route = createFileRoute("/redaptic")({
   component: Redaptic,
@@ -20,13 +24,19 @@ export const Route = createFileRoute("/redaptic")({
 function Redaptic() {
   const [searchText, setSearchText] = React.useState("");
 
-  const [content, setContent] = React.useState([...dbContentV1]);
+  const [localContent, setLocalContent] = React.useState(getLocalContent());
+
+  const [selectedContent, setSelectedContent] = React.useState<Content | null>(
+    null
+  );
+
+  const content = uniqueBy([...localContent, ...dbContentV1], "slug");
 
   return (
     <div className={styles.pageWrapper}>
       <header>
         <Link to="/redaptic">
-          <img src={redapticLogo} alt="Redaptic" />
+          <img src={redapticLogo} alt="Redaptic logo" />
         </Link>
         <TextField
           label="Søk i innhold"
@@ -35,25 +45,27 @@ function Redaptic() {
             setSearchText(event.target.value);
           }}
         />
-        <Button
-          variant="outlined"
-          onClick={() => {
-            const data = createEmptyContent();
-            createLocalContent(data);
-            setContent([data, ...content]);
-          }}
-        >
-          Lag innhold
-        </Button>
-        <Button
-          variant="outlined"
-          onClick={() => {
-            deleteLocalContent();
-            setContent(dbContentV1);
-          }}
-        >
-          Slett innhold
-        </Button>
+        <div style={{ display: "flex", gap: "1rem", height: "100%" }}>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              const data = createEmptyContent();
+              createLocalContent(data);
+              setLocalContent([data, ...localContent]);
+            }}
+          >
+            Lag innhold
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              deleteLocalContent();
+              setLocalContent([]);
+            }}
+          >
+            Slett innhold
+          </Button>
+        </div>
       </header>
 
       <main>
@@ -68,10 +80,26 @@ function Redaptic() {
                   .includes(searchText.toLowerCase())
             )
             .map((x, i) => (
-              <ListCard key={i} data={x} />
+              <ListCard
+                key={i}
+                data={x}
+                onCardClick={() => setSelectedContent(x)}
+              />
             ))}
         </div>
       </main>
+
+      <RedapticDialog
+        content={selectedContent}
+        handleClose={() => setSelectedContent(null)}
+        handleSave={(content) => {
+          createLocalContent(content);
+          const newLocalContents = localContent.map((x) =>
+            x.slug === content.slug ? content : x
+          );
+          setLocalContent(newLocalContents);
+        }}
+      />
 
       <SButton />
     </div>

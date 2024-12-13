@@ -2,7 +2,7 @@ import * as React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Chip, IconButton, TextField } from "@mui/material";
 import GridCard from "../components/GridCard";
-import { groupedData, sortedData } from "../utils";
+import { groupedData, sortedData, uniqueBy } from "../utils";
 import styles from "./skolestudio.module.css";
 import { RButton } from "../components/RS-button";
 import { Link } from "@tanstack/react-router";
@@ -15,6 +15,8 @@ import { bgColor, textColor, textColorLight } from "../theme";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { Content } from "../data/types";
+import { debounce } from "@mui/material/utils";
+import SkolestudioDialog from "../components/Skolestudio.dialog";
 
 const contentSearchSchema = z.object({
   text: z.string().optional(),
@@ -39,15 +41,19 @@ type Item = {
 
 function Skolestudio() {
   const navigate = useNavigate({ from: Route.fullPath });
+  const [selectedContent, setSelectedContent] = React.useState<Content | null>(
+    null
+  );
 
   const [showFilterPanel, setShowFilterPanel] = React.useState(false);
 
-  const content = [...getLocalContent(), ...dbContentV1];
+  const content = uniqueBy([...getLocalContent(), ...dbContentV1], "slug");
 
   const search = Route.useSearch();
   const { subjects, contentTypes, formats, lectureTypes, text, topics } =
     search;
-    const [searchText, setSearchText] = React.useState(text ?? "");
+
+  const [searchText, setSearchText] = React.useState(text ?? "");
 
   const contentFilter = (content: Content) => {
     const textFilter =
@@ -83,6 +89,14 @@ function Skolestudio() {
     return true;
   };
 
+  const onSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(event.target.value);
+    debounce(
+      (value: string) => onFiltering("text", value),
+      250
+    )(event.target.value);
+  };
+
   const onFiltering = (
     filterProp: keyof ContentSearch,
     filterValue: string
@@ -90,7 +104,6 @@ function Skolestudio() {
     navigate({
       search: (prev) => {
         if (filterProp === "text") {
-          setSearchText(filterValue); //TODO: veldig dårlig performance på tekst filtrering. Kanskje noe memo?
           return {
             ...prev,
             text: filterValue ? filterValue : undefined,
@@ -119,58 +132,73 @@ function Skolestudio() {
         }
 
         return {
-            ...prev,
-            [filterProp]: prev[filterProp].filter((v) => v !== filterValue),
+          ...prev,
+          [filterProp]: prev[filterProp].filter((v) => v !== filterValue),
         };
       },
     });
   };
-  const tagFilter = (tagValue: Item) =>
-    !searchText || tagValue.label.toLowerCase().includes(searchText.toLowerCase());
 
-  const topicFacetOptions: Item[] = sortedData(groupedData(content, "topics"))
-    .map(([topic, records]) => ({
-      label: topic,
-      value: topic,
-      count: records.length,
-    }))
-    .filter(tagFilter);
-  const subjectsFacetOptions: Item[] = sortedData(
-    groupedData(content, "subjects")
-  )
-    .map(([topic, records]) => ({
-      label: topic,
-      value: topic,
-      count: records.length,
-    }))
-    .filter(tagFilter);
-  const lectureTypesFacetOptions: Item[] = sortedData(
-    groupedData(content, "lectureTypes")
-  )
-    .map(([topic, records]) => ({
-      label: topic,
-      value: topic,
-      count: records.length,
-    }))
-    .filter(tagFilter);
-  const contentTypesFacetOptions: Item[] = sortedData(
-    groupedData(content, "contentTypes")
-  )
-    .map(([topic, records]) => ({
-      label: topic,
-      value: topic,
-      count: records.length,
-    }))
-    .filter(tagFilter);
-  const formatsFacetOptions: Item[] = sortedData(
-    groupedData(content, "formats")
-  )
-    .map(([topic, records]) => ({
-      label: topic,
-      value: topic,
-      count: records.length,
-    }))
-    .filter(tagFilter);
+  const tagFilter = (tagValue: Item) =>
+    !searchText ||
+    tagValue.label.toLowerCase().includes(searchText.toLowerCase());
+
+  const topicFacetOptions: Item[] = React.useMemo(
+    () =>
+      sortedData(groupedData(content, "topics"))
+        .map(([topic, records]) => ({
+          label: topic,
+          value: topic,
+          count: records.length,
+        }))
+        .filter(tagFilter),
+    [content]
+  );
+
+  const subjectsFacetOptions: Item[] = React.useMemo(
+    () =>
+      sortedData(groupedData(content, "subjects"))
+        .map(([topic, records]) => ({
+          label: topic,
+          value: topic,
+          count: records.length,
+        }))
+        .filter(tagFilter),
+    [content]
+  );
+  const lectureTypesFacetOptions: Item[] = React.useMemo(
+    () =>
+      sortedData(groupedData(content, "lectureTypes"))
+        .map(([topic, records]) => ({
+          label: topic,
+          value: topic,
+          count: records.length,
+        }))
+        .filter(tagFilter),
+    [content]
+  );
+  const contentTypesFacetOptions: Item[] = React.useMemo(
+    () =>
+      sortedData(groupedData(content, "contentTypes"))
+        .map(([topic, records]) => ({
+          label: topic,
+          value: topic,
+          count: records.length,
+        }))
+        .filter(tagFilter),
+    [content]
+  );
+  const formatsFacetOptions: Item[] = React.useMemo(
+    () =>
+      sortedData(groupedData(content, "formats"))
+        .map(([topic, records]) => ({
+          label: topic,
+          value: topic,
+          count: records.length,
+        }))
+        .filter(tagFilter),
+    [content]
+  );
 
   return (
     <div className={styles.pageWrapper}>
@@ -181,15 +209,14 @@ function Skolestudio() {
         <TextField
           label="Søk i innhold"
           value={searchText}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            onFiltering("text", event.target.value);
-          }}
+          onChange={onSearchTextChange}
         />
         <SkolestudioMenu />
       </header>
 
       <section className={styles.topicGrid}>
         <IconButton
+        aria-label="Filter"
           onClick={() => setShowFilterPanel(!showFilterPanel)}
           color="primary"
           sx={{
@@ -320,11 +347,19 @@ function Skolestudio() {
             <GridCard
               key={i}
               data={item}
+              onCardClick={() => {
+                setSelectedContent(item);
+              }}
               onTopicClick={(value) => onFiltering("topics", value)}
             />
           ))}
         </div>
       </main>
+
+      <SkolestudioDialog
+        content={selectedContent}
+        handleClose={() => setSelectedContent(null)}
+      />
 
       <RButton />
     </div>

@@ -11,11 +11,15 @@ function RootComponent() {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <Container maxWidth="xl" disableGutters sx={{paddingInline: "0.5rem"}}>
+        <Container
+          maxWidth="xl"
+          disableGutters
+          sx={{ paddingInline: "0.5rem" }}
+        >
           <Outlet />
         </Container>
       </ThemeProvider>
-      <TanStackRouterDevtools position="bottom-right" />
+      {/* <TanStackRouterDevtools position="bottom-right" /> */}
     </>
   );
 }

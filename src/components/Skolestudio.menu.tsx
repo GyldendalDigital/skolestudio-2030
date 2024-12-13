@@ -15,13 +15,14 @@ export default function SkolestudioMenu() {
   return (
     <div>
       <IconButton
-        size="large"
+        size="small"
         aria-controls={open ? "basic-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
+        aria-label="Dine valg"
         onClick={handleClick}
       >
-        <UserIcon />
+        <UserIcon sx={{ width: "40px", height: "40px" }} />
       </IconButton>
       <Menu
         id="basic-menu"

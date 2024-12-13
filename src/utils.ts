@@ -14,3 +14,15 @@ export const groupedData = (data: any[], prop: any) =>
 
 export const sortedData = (records: any[]) =>
   Object.entries(records).sort((a, b) => b[1].length - a[1].length);
+
+export const uniqueBy = <T>(array: T[], key: keyof T) => {
+  const uniqueValues: any[] = [];
+
+  for (const item of array) {
+    if (!uniqueValues.find((x) => x[key] === item[key])) {
+      uniqueValues.push(item);
+    }
+  }
+
+  return uniqueValues;
+};

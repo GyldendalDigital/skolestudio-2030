@@ -20,7 +20,8 @@ export const getLocalContent = (): Content[] => {
 };
 
 export const createLocalContent = (data: Content) => {
-  localStorage.setItem("content", JSON.stringify([...getLocalContent(), data]));
+  const existingContent = getLocalContent().filter((x) => x.slug !== data.slug);
+  localStorage.setItem("content", JSON.stringify([...existingContent, data]));
 };
 
 export const deleteLocalContent = () => {

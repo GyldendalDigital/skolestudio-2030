@@ -9,13 +9,14 @@ export const RButton = () => {
 
   return (
     <StyledButton
+        aria-label="Redaptic"
       onClick={() =>
         navigate({
           to: "/redaptic",
         })
       }
     >
-      <img src={redapticLogo} />
+      <img src={redapticLogo} alt="" />
     </StyledButton>
   );
 };
@@ -23,13 +24,14 @@ export const SButton = () => {
   const navigate = useNavigate();
   return (
     <StyledButton
-      onClick={() =>
+        aria-label="Skolestudio"
+        onClick={() =>
         navigate({
           to: "/skolestudio",
         })
       }
     >
-      <img src={skolestudioLogo} />
+      <img src={skolestudioLogo} alt="" />
     </StyledButton>
   );
 };

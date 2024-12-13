@@ -8,15 +8,18 @@ import { Chip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Content } from "../data/types";
 
-export default function GridCard({
-  data,
-  onTopicClick,
-}: {
+type Props = {
   data: Content;
+  onCardClick: () => void;
   onTopicClick: (topicValue: string) => void;
-}) {
+};
+
+export default function GridCard({ data, onCardClick, onTopicClick }: Props) {
   return (
-    <Card sx={{ display: "flex", flexDirection: "column" }}>
+    <Card
+      sx={{ display: "flex", flexDirection: "column" }}
+      onClick={onCardClick}
+    >
       <CardMedia
         component="img"
         sx={{ height: 140 }}
@@ -46,18 +49,29 @@ export default function GridCard({
         </Box>
 
         <ChipWrapper>
-          <Chip
-            label={data.subjects.join(", ")}
-            variant="outlined"
-            size="small"
-          />
+          {data.subjects.map((subject, i) => (
+            <Chip
+              key={i}
+              label={subject}
+              variant="outlined"
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation();
+                onTopicClick(subject);
+              }}
+            />
+          ))}
+
           {data.topics.map((topic, i) => (
             <Chip
               key={i}
               label={topic}
               variant="outlined"
               size="small"
-              onClick={() => onTopicClick(topic)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onTopicClick(topic);
+              }}
             />
           ))}
         </ChipWrapper>
